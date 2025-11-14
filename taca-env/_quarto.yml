@@ -9,8 +9,6 @@ book:
     - index.qmd
     - intro.qmd
     - summary.qmd
-    - participantes.qmd
-    - references.qmd
     - 01-capitulo.qmd
     - 02-capitulo.qmd
     - 03-capitulo.qmd
@@ -18,6 +16,8 @@ book:
     - 05-capitulo.qmd
     - 06-capitulo.qmd
     - 07-capitulo.qmd
+    - participantes.qmd
+    - references.qmd
 
 bibliography: references.bib
 
