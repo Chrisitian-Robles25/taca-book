@@ -1,0 +1,57 @@
+# Participantes del libro
+
+El presente libro es el resultado de un esfuerzo colectivo. Aunque muchos apartados han sido redactados y unificados por el autor principal, la calidad y el alcance de la obra se deben al trabajo colaborativo de docentes, estudiantes y colegas que, desde distintas perspectivas, ayudaron a dar forma a estas páginas.
+
+------------------------------------------------------------------------
+
+## Autor principal
+
+**Cristian Ramiro Narváez Guillén**\
+Carrera Computación\
+\[Universidad Nacional de Loja\]
+
+Responsable de la planificación global del texto, la redacción de los capítulos centrales, la selección de ejercicios y la integración de los distintos materiales en una narrativa coherente orientada tanto a la formación teórica como a la aplicación práctica.
+
+------------------------------------------------------------------------
+
+## Colaboradores académicos
+
+A continuación se reconocen las contribuciones de quienes participaron en la creación y refinamiento de diversos capítulos y secciones:
+
+-   **Nombre Apellido 1** – Revisión de los capítulos de lenguajes regulares y autómatas finitos; propuesta de ejemplos adicionales orientados a compiladores.
+-   **Nombre Apellido 2** – Aportes en la sección de gramáticas libres de contexto, árboles de derivación y análisis sintáctico.
+-   **Nombre Apellido 3** – Colaboración en la redacción inicial de los capítulos sobre máquinas de Turing y problemas indecidibles.
+
+Sus observaciones y sugerencias fueron esenciales para asegurar la precisión técnica y la claridad expositiva.
+
+------------------------------------------------------------------------
+
+## Estudiantes participantes
+
+Varios estudiantes contribuyeron de manera significativa mediante:
+
+-   la resolución y discusión de ejercicios que dieron lugar a nuevos ejemplos y problemas propuestos;
+-   la identificación de secciones que requerían explicaciones alternativas o un enfoque más gradual;
+-   la elaboración de diagramas de autómatas y esquemas que han sido adaptados para su inclusión en el texto.
+
+En particular, se agradece la participación de las cohortes de la asignatura **Teoría de Autómatas y Lenguajes Formales** de los años **2025–2026**, cuyos comentarios ayudaron a mejorar la estructura y el nivel de detalle de varios capítulos.
+
+------------------------------------------------------------------------
+
+## Revisores y pares académicos
+
+Este manuscrito fue revisado por colegas que aportaron una mirada crítica sobre la organización, el contenido y la alineación del texto con los programas de estudio actuales. Sus sugerencias permitieron:
+
+-   equilibrar la profundidad teórica con la accesibilidad;
+-   refinar la selección de temas y ejemplos;
+-   incorporar referencias actualizadas a textos clásicos y recursos complementarios.
+
+A todos ellos, mi reconocimiento por el tiempo dedicado y la generosidad de sus comentarios.
+
+------------------------------------------------------------------------
+
+## Reconocimiento institucional
+
+Finalmente, se agradece el apoyo de **Facultad de Energía las Industrias y los Recursos Naturales no Renovables y la Carrera de Computación** y de la **Universidad Nacional de Loja**, que brindaron el entorno académico y los espacios de docencia necesarios para que las ideas aquí recogidas pudieran ser discutidas, probadas y mejoradas a lo largo de varios períodos académicos.
+
+Sin el compromiso de esta comunidad académica, este libro no habría sido posible.
