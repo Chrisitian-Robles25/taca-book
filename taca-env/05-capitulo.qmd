@@ -1,7 +1,3 @@
-Claro, aquí tienes el documento con el formato `05-capitulo.qmd` y el nombre del autor actualizado a **Marylin Alvarado**.
-
-```qmd
----
 title: "Propiedades y Operaciones de Lenguajes Regulares"
 author: "Marylin Alvarado"
 format: html
