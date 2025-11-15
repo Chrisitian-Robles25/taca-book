@@ -1,5 +1,5 @@
 ---
-title: "Equivalencia y Conversión de Modelos" author: "Mateo Chamba" format: html
+title: "Equivalencia y Conversión de Modelos"
 format: html
 ---
 
