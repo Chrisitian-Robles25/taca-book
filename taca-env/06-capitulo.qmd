@@ -1,162 +1,272 @@
 ---
-title: "El Principio del Lema de Bombeo (Pumping Lemma)"
+title: "Propiedades de Decisión para Lenguajes Regulares"
+author: "Christian Leonardo Robles Maza"
 format:
-        html: default
-        pdf: default
-toc: true
-bibliography: references.bib
-nocite: "@*"
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
 ---
 
-## 1.1 Introducción al Lema de Bombeo
+# Propiedades de Decisión para Lenguajes Regulares  
+Este documento presenta una explicación **profunda**, **detallada** y **estructurada** sobre tres propiedades de decisión fundamentales para los **lenguajes regulares** y sus autómatas asociados:
 
-### Concepto Fundamental
+1. **¿El lenguaje aceptado es vacío?**
+2. **¿El lenguaje aceptado es finito o infinito?**
+3. **Problema de pertenencia: ¿Una cadena \( w \) pertenece a \( L(A) \)?**
 
-El Principio del **Lema de Bombeo** (Pumping Lemma) es una herramienta fundamental en la teoría de lenguajes formales para demostrar que un lenguaje **no es regular**. Si bien las fuentes proporcionadas no mencionan explícitamente el "Pumping Lemma" ni detallan su demostración, sí presentan un resultado equivalente y muy útil que se utiliza para el mismo propósito: la caracterización de los lenguajes regulares mediante el concepto de **residuales** (o residuos de lenguajes).
+Cada sección incluye **intuición**, **fundamento formal**, **algoritmos**, **pseudocódigo**, **tablas**, **notas**, **consejos prácticos**, y **ejemplos completos**.
 
-A continuación, se detalla este enfoque, centrándose en la caracterización y su aplicación práctica para demostrar que un lenguaje NO es regular.
+---
 
-## 1.2 Caracterización de Lenguajes Regulares
+## 1. Notación Formal y Recordatorio Teórico
 
-### Teorema Fundamental de Residuales
+Antes de analizar propiedades de decisión, recordemos la estructura formal de un autómata determinista finito (DFA):
 
-La base para determinar si un lenguaje es regular se establece mediante el **Teorema 2.31**, que vincula la regularidad de un lenguaje con la cantidad de sus residuales:
+\[
+A = (Q, \Sigma, \delta, q_0, F)
+\]
 
-> **Teorema 2.31**: Un lenguaje $L$ es regular si y solo si tiene un número finito de residuales.
+| Símbolo | Descripción |
+|---------|-------------|
+| \( Q \) | Conjunto finito de estados |
+| \( \Sigma \) | Alfabeto de entrada |
+| \( \delta \) | Función de transición \( \delta: Q \times \Sigma \to Q \) |
+| \( q_0 \) | Estado inicial |
+| \( F \subseteq Q \) | Conjunto de estados finales |
 
-### Concepto de Residual
+> **Nota:**  
+> Si trabajas con un NFA, estas propiedades siguen siendo decidibles. Solo cambia el método de recorrido (se usa conjuntos de estados).
 
-Un **residual** de un lenguaje $L$ con respecto a una palabra $w$ es el lenguaje:
+---
 
-$$L_w = \{u \in \Sigma^* : wu \in L\}$$
+# 2. ¿El Lenguaje Aceptado es Vacío?
 
-En otras palabras, $L_w$ contiene todas las palabras que, cuando se concatenan a $w$ al inicio, pertenecen a $L$.
+## 2.1 Intuición
 
-### Conexión con Autómatas Finitos
+El lenguaje \( L(A) \) es **vacío** cuando **no existe ningún camino** desde el estado inicial \( q_0 \) hacia un estado final en \( F \).
 
-Existe una conexión intrínseca entre los estados de un Autómata Determinista (DA) y los residuales del lenguaje que reconoce:
+Esto es un problema de **conectividad en grafos dirigidos**.
 
-- **Correspondencia directa**: Cada estado del autómata corresponde a un residual del lenguaje
-- **Autómata Canónico**: El Autómata Determinista Canónico ($C_L$) de un lenguaje $L$ tiene como conjunto de estados $Q_L$ el conjunto de **todos los residuales de $L$**
-- **Minimalidad**: Si $L$ es regular, $C_L$ es el DFA minimal único (salvo isomorfismo) que reconoce $L$
+> **Idea clave:**  
+> Si puedo llegar a un estado final, entonces existe al menos una palabra aceptada → el lenguaje NO es vacío.
 
-### Implicación Fundamental
+---
 
-Por lo tanto, si un lenguaje tiene **infinitos residuales**, debe requerir **infinitos estados** y, por ende, **no es regular**.
+## 2.2 Algoritmo General
 
-## 1.3 Aplicación Práctica para Demostrar No Regularidad
+1. Realizar una **búsqueda BFS o DFS** desde el estado inicial.
+2. Marcar todos los estados visitados.
+3. Si durante el recorrido se alcanza algún estado \( f \in F \), entonces:
+   - **El lenguaje NO es vacío**.
+4. Si el recorrido termina sin visitar estados finales:
+   - **El lenguaje es vacío**.
 
-### Estrategia de Demostración
+---
 
-El teorema de la caracterización proporciona una técnica fundamental para probar que un lenguaje dado $L \subseteq \Sigma^*$ no es regular.
+## 2.3 Pseudocódigo
 
-La estrategia consiste en demostrar que el lenguaje $L$ tiene un número **infinito de residuales**:
+```pseudo
+function esVacio(DFA A):
+    stack ← [q0]
+    visitado ← {q0}
 
-#### Pasos del Procedimiento
+    while stack not empty:
+        q ← pop(stack)
 
-1. **Definir un conjunto infinito**: Identificar un conjunto infinito de palabras $W = \{w_0, w_1, w_2, \ldots\} \subseteq \Sigma^*$
+        if q in F:
+            return false   # Hay camino a un final → NO es vacío
 
-2. **Probar distinción de residuales**: Demostrar que los residuales generados por estas palabras son todos distintos, es decir:
-   $$L_{w_i} \neq L_{w_j} \text{ para cualquier } i \neq j$$
+        for cada símbolo a en Σ:
+            q' ← δ(q, a)
+            if q' not in visitado:
+                visitado.add(q')
+                push(stack, q')
 
-3. **Estrategia de diferenciación**: Para probar que $L_{w_i} \neq L_{w_j}$, se debe demostrar que existe una palabra $w_{i,j}$ que pertenece a exactamente uno de los conjuntos $L_{w_i}$ y $L_{w_j}$
+    return true  # Nunca alcanzamos un estado final
+```
+## 2.4 Complejidad
 
-4. **Conclusión**: Si se tiene éxito en este proceso, se concluye que $L$ tiene infinitos residuales y, por lo tanto, **no es regular**
+El coste de la comprobación de vacuidad se corresponde con una exploración del grafo de estados del autómata. Sea \(Q\) el conjunto de estados y \(E\) el conjunto de transiciones (aristas). Entonces:
 
-## 1.4 Ejemplos de Aplicación (Residuales Infinitos)
+- Tiempo: \(O(|Q| + |E|)\) — coste de una BFS/DFS. Dado que generalmente \(|E|\approx |Q|\cdot|\Sigma|\), se puede expresar también como \(O(|Q|\cdot|\Sigma|)\).
+- Espacio: \(O(|Q|)\) para la marca de visitados y la estructura de la cola/pila.
 
-Ejemplos de lenguajes que demuestran no ser regulares al tener infinitos residuales.
+Consejo práctico: eliminar estados inalcanzables antes de ejecutar otros algoritmos reduce el tamaño efectivo del grafo y acelera todos los procedimientos posteriores.
 
-### Ejemplo 1: Lenguaje $L = \{a^n b^n : n \geq 0\}$
+## 2.5 Ejemplo Ilustrativo
 
-**Descripción**: El conjunto de palabras con $n$ 'a' seguidas de $n$ 'b's
+Dado el autómata (representación simplificada):
 
-#### Procedimiento de Demostración
 
-1. **Conjunto infinito**: Se define $W = \{a^k : k \geq 0\} = \{\varepsilon, a, aa, aaa, \ldots\}$
+q0 -> q1
+q1 -> q2
+q2 (no es final)
 
-2. **Análisis para palabras distintas**: Para dos palabras distintas $a^i, a^j \in W$ (con $i \neq j$), se toma la palabra $b^i$ como diferenciador
+Ninguna transición llega a estados finales.
 
-3. **Verificación de pertenencia**:
-   - $b^i \in L_{a^i}$ porque $a^i b^i \in L$ ✓
-   - $b^i \notin L_{a^j}$ porque $a^j b^i \notin L$ ✗
+➡ Lenguaje vacío.
+```
 
-4. **Conclusión**: Dado que $L_{a_i} \neq L_{a_j}$, el lenguaje tiene infinitos residuales y **no es regular**
+Consejo: Siempre elimina primero estados inalcanzables. Acelera todos los demás algoritmos.
+```
+---
 
-### Ejemplo 2: Lenguaje $L = \{ww : w \in \{0,1\}^*\}$
+# 3. ¿El Lenguaje Aceptado es Finito o Infinito?
 
-**Descripción**: El conjunto de palabras formadas por la concatenación de una palabra consigo misma (repetición exacta)
+## 3.1 Intuición Fundamental
 
-#### Procedimiento de Demostración
+Un lenguaje regular es infinito si y solo si existe:
 
-1. **Conjunto infinito**: Se define $W = \{0^n 1 : n \geq 0\} = \{1, 01, 001, 0001, \ldots\}$
+1. Un ciclo alcanzable desde el estado inicial; y
+2. Desde ese ciclo se puede llegar a un estado final.
 
-2. **Análisis para palabras distintas**: Para dos palabras distintas $u = 0^i 1$ y $v = 0^j 1$ (asumiendo $i < j$ sin pérdida de generalidad), se toma $u$ como palabra de prueba
+Tabla rápida:
 
-3. **Verificación de pertenencia**:
-   - $u \in L_u$ porque $uu \in L$ (la concatenación $u$ consigo misma pertenece a $L$) ✓
-   - $u \notin L_v$ porque $vu \notin L$ ✗
+| Condición | Resultado |
+|---|---:|
+| Hay ciclo útil | Lenguaje infinito |
+| No hay ciclo útil | Lenguaje finito |
 
-4. **Conclusión**: Dado que hay infinitos residuales distintos, el lenguaje **no es regular**
+Definición: ciclo útil → ciclo que conduce (directa o indirectamente) a un estado final.
 
-### Ejemplo 3: Lenguaje $L = \{a^{n^2} : n \geq 0\}$
+## 3.2 Fundamento Formal
 
-**Descripción**: Palabras de 'a's con longitud un cuadrado perfecto ($1, a, aaaa, aaaaaaaaa, \ldots$)
+Si hay un ciclo accesible que llega a un final, entonces puede repetirse arbitrariamente y generar infinitas palabras. Formalmente, si existen palabras \(u,v,w\) con \(v\) no vacío tal que \(u v^k w \in L(A)\) para todo \(k\ge 0\), entonces \(L(A)\) es infinito.
 
-#### Procedimiento de Demostración
+Si no hay ciclos útiles, el autómata alcanzable desde \(q_0\) es esencialmente acíclico y solo admite palabras de longitud limitada.
 
-1. **Conjunto infinito**: Se utiliza $W = L$ (las propias palabras del lenguaje: $W = \{a^{i^2} : i \geq 0\}$)
+## 3.3 Algoritmo usando Componentes Fuertemente Conexas (SCC)
 
-2. **Análisis para palabras distintas**: Para dos palabras distintas $a^{i^2}, a^{j^2} \in W$, la palabra $a^{2i+1}$ actúa como diferenciador
+1. Obtener el subgrafo alcanzable desde \(q_0\) (BFS).
+2. Dividirlo en SCC (algoritmo de Tarjan o Kosaraju).
+3. Para cada SCC:
+   - si tiene más de 1 estado o un bucle propio, entonces contiene un ciclo;
+   - verificar si desde esa SCC existe un camino hacia algún estado final.
+4. Si existe al menos una SCC con ciclo y camino a final ⇒ \(L(A)\) es infinito; en caso contrario, es finito.
 
-3. **Verificación de pertenencia**:
-   - $a^{2i+1} \in L_{a^{i^2}}$ ya que $a^{i^2} a^{2i+1} = a^{(i+1)^2}$ (suma de cuadrados) ✓
-   - $a^{2i+1} \notin L_{a^{j^2}}$ porque para $i \neq j$, la cantidad $j^2 + 2i + 1$ **no** es un número cuadrado perfecto en general ✗
+## 3.4 Pseudocódigo
 
-4. **Conclusión**: Como los residuales son distintos, el lenguaje **no es regular**
+```text
+function esInfinito(DFA A):
+  reachable ← BFS(q0)
+  SCCs ← strongly_connected_components(reachable)
 
-## 1.5 Fundamento Teórico de la No Regularidad
+  for cada componente C en SCCs:
+    if (|C| > 1) or (existe q en C con δ(q,a)=q):
+      if existe camino desde C a algún f ∈ F:
+        return true  # Lenguaje infinito
 
-### Principio Subyacente
+  return false  # No existen ciclos útiles
+```
 
-La metodología para probar la no regularidad, tal como se presenta en las fuentes, se basa en un principio fundamental:
+## 3.5 Ejemplo
 
-> **Principio del Bombeo**: Encontrar una estructura infinita (el conjunto $W$) que obliga a que cualquier DFA que reconozca el lenguaje tenga que "**recordar**" un número infinito de prefijos distintos (los residuales), lo cual es **imposible para un autómata finito**.
+Autómata con ciclo útil:
 
-### Intuición Informal
+```
+q1 -> q2
+q2 -> q1   (ciclo)
 
-Un autómata finito tiene un número limitado de estados. Si podemos demostrar que necesitamos infinitos estados distintos para "recordar" información crucial sobre los prefijos procesados, entonces el lenguaje no puede ser reconocido por ningún autómata finito.
+Desde q2 se llega a qf (final)
 
-Este es el corazón del Pumping Lemma: **los lenguajes regulares tienen una propiedad de "periodicidad" en los residuales**, mientras que los lenguajes no regulares requieren una memoria arbitrariamente grande.
+➡ Lenguaje infinito.
+```
 
-### Relación con el Pumping Lemma Clásico
+Nota pedagógica: no todo ciclo implica infinitud; sólo los ciclos desde los que existe camino a aceptación.
 
-Aunque el enfoque de residuales es más abstracto que la formulación clásica del Pumping Lemma, ambos capturan la misma idea:
+---
 
-- **Pumping Lemma clásico**: Para todo lenguaje regular, existe una longitud $p$ (longitud de bombeo) tal que toda palabra de longitud $\geq p$ puede descomponerse en tres partes $(xyz)$ donde $|xy| \leq p$, $|y| > 0$, y $xy^i z \in L$ para todo $i \geq 0$
+# 4. Problema de Pertenencia: ¿Una cadena w ∈ L(A)?
 
-- **Teorema de Residuales**: La existencia de un número finito de residuales implica que debe existir una "periodicidad" en la estructura del lenguaje, que es precisamente lo que el Pumping Lemma formaliza
+## 4.1 Intuición
 
-## 1.6 Resumen y Conclusiones
+Simular el autómata sobre la cadena \(w\). Para un DFA la simulación es directa; para un NFA se trabaja con conjuntos de estados (y se debe aplicar la ε-clausura cuando corresponda).
 
-### Puntos Clave
+## 4.2 Algoritmo para DFA
 
-1. **Un lenguaje es regular si y solo si tiene finitos residuales** (Teorema 2.31)
+```text
+function perteneceDFA(A, w):
+  q ← q0
+  for a in w:
+    q ← δ(q, a)
+  return q in F
+```
 
-2. **La estrategia de demostración** consiste en encontrar un conjunto infinito de palabras cuyos residuales sean todos distintos
+## 4.3 Algoritmo para NFA con ε-transiciones
 
-3. **La metodología es constructiva**: Proporciona un método práctico para demostrar la no regularidad sin necesidad de la formulación clásica del Pumping Lemma
+```text
+function perteneceNFA(N, w):
+  S ← epsilon_closure({q0})
 
-4. **Los tres ejemplos ilustran casos típicos**:
-   - Lenguajes con conteo simple ($a^n b^n$)
-   - Lenguajes con estructura compleja ($ww$)
-   - Lenguajes con propiedades aritméticas ($a^{n^2}$)
+  for a in w:
+    T ← ∅
+    for p in S:
+      T ← T ∪ δ(p, a)
+    S ← epsilon_closure(T)
 
-### Aplicabilidad
+  return (S ∩ F) ≠ ∅
+```
 
-Esta técnica es especialmente útil porque:
+## 4.4 Complejidad
 
-- **Es directa**: Se basa en conceptos simples (residuales)
-- **Es constructiva**: Se puede aplicar de manera sistemática
-- **Es conceptualmente clara**: La intuición de "memoria infinita" es evidente
+| Tipo de autómata | Complejidad temporal |
+|---|---:|
+| Vacuidad / BFS, SCC | O(|Q| + |E|) ≈ O(|Q|·|Σ|) |
+| Comprobación de finitud (SCC) | O(|Q| + |E|) |
+| Pertenencia (DFA) | O(|w|) |
+| Pertenencia (NFA, simulación con ε-clausuras) | O(|w| · (|Q| + |E|)) ≈ O(|w| · |Q| · |Σ|) |
+| Conversión NFA→DFA (subconjuntos) | O(2^{|Q|}) en el peor caso (explosión exponencial) |
 
+Comentarios:
+- La verificación de vacuidad y la detección de ciclos útiles son lineales en el tamaño del grafo (estados + transiciones).
+- La simulación de un DFA recorre la cadena una vez; la simulación directa de un NFA mantiene conjuntos de estados y puede costar proporcionalmente más por símbolo.
+
+## 4.5 Ejemplo (simulación en DFA)
+
+Autómata (simplificado):
+
+```
+q0 -a-> q1
+q1 -b-> q1
+q1 -c-> qf
+
+Prueba w = a b b b c
+```
+
+Simulación:
+
+| Paso | Estado |
+|---:|:---:|
+| inicio | q0 |
+| a | q1 |
+| b | q1 |
+| b | q1 |
+| b | q1 |
+| c | qf |
+
+➡ Cadena aceptada.
+
+Error común: no aplicar la ε-clausura en NFAs que la requieren; esto produce falsos negativos.
+
+---
+
+# 5. Resumen General (Tabla Sintética)
+
+| Propiedad | Método | Resultado clave |
+|---|---|---|
+| ¿Es vacío? | BFS/DFS desde q0 | ¿Se alcanza un estado final? |
+| ¿Es finito o infinito? | SCC + análisis de ciclo | ¿Existe ciclo útil que llega a final? |
+| Pertenencia de w | Simulación (DFA) / Subconjuntos (NFA) | ¿Termina en estado final (o conjunto que contiene final)? |
+
+---
+
+# 6. Notas finales y recomendaciones
+
+- Prefiere siempre reducir el autómata: elimina estados inalcanzables y transiciones muertas antes de ejecutar análisis costosos.
+- Para comprobaciones repetidas de pertenencia en NFAs con muchas consultas, considera convertir a DFA si el coste de la conversión es asumible; de lo contrario, usa simulación por conjuntos.
+- Implementa las estructuras de datos (listas de adyacencia, bitsets para conjuntos de estados) para optimizar memoria y tiempo en implementaciones prácticas.
